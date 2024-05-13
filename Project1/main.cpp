@@ -1,13 +1,15 @@
 #include <SFML/Graphics.hpp>
 #include "include/map.h"
+#include "NodeSfml.h"
 #include <unordered_map>
 unordered_map<string, unordered_map<string, Route>> Map::adjList;
 int main()
 {
+
     sf::RenderWindow window(sf::VideoMode(1920, 1080), "SFML works!");
-    sf::CircleShape shape(100.f);
-    shape.setFillColor(sf::Color::Green);
-   
+    
+    Boarders boarders;
+
     while (window.isOpen())
     {
         sf::Event event;
@@ -18,7 +20,7 @@ int main()
         }
         
         window.clear();
-        window.draw(shape);
+        boarders.drawBoarders(window);
         window.display();
     }
 
