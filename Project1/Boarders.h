@@ -1,9 +1,9 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include <iostream>
+
 using namespace sf;
-using namespace std;
-struct Boarders {
+class Boarders {
+public:
 	RectangleShape upper, lower;
 	RectangleShape left, right;
 	Boarders() {
@@ -22,15 +22,11 @@ struct Boarders {
 		left.setFillColor(Color::Red);
 		right.setFillColor(Color::Yellow);
 	}
-	void drawBoarders(RenderWindow &window) {
+	void drawBoarders(RenderWindow& window) {
 		window.draw(upper);
 		window.draw(lower);
 		window.draw(left);
 		window.draw(right);
 	}
-};
-class NodeSfml
-{
-
 };
 
