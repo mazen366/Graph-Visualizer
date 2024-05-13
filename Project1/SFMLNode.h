@@ -10,7 +10,8 @@ using namespace std;
 class SFMLNode
 {
 public:
-	bool isDragged = 0, isHoovered = 0, active = false;
+	bool isDragged = 0, isHoovered = 0;
+	static bool active;
 	static int cnt;
 	int kk;
 	CircleShape shape;

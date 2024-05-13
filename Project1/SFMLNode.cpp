@@ -1,8 +1,11 @@
 #include "SFMLNode.h"
 #include "helperFunctions.h"
-
+#include <assert.h>
+#include <cstdlib>
+#include <queue>
 SFMLNode::SFMLNode()
 {
+	cityfont.loadFromFile("SedanSCRegular.ttf");
 	cityName.setFont(cityfont);
 	cityName.setString("");
 	cityName.setFillColor(Color::Red);
@@ -14,6 +17,7 @@ SFMLNode::SFMLNode()
 	shape.setOrigin(50 / 2, 50 / 2);
 }
 SFMLNode::SFMLNode(string name) {
+	cityfont.loadFromFile("SedanSCRegular.ttf");
 	cityName.setFont(cityfont);
 	cityName.setString(name);
 	cityName.setFillColor(Color::Red);
