@@ -36,6 +36,9 @@
     <ClInclude Include="include\map_helpers.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="NodeSfml.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -58,6 +61,9 @@
     </ClCompile>
     <ClCompile Include="src\map_helpers.cpp">
       <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeSfml.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
