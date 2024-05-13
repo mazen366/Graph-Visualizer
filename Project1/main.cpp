@@ -14,7 +14,6 @@ void drawLine(SFMLNode node1, SFMLNode node2, RenderWindow &window)
     sf::VertexArray lines(sf::LinesStrip, 2);
     lines[0].position = sf::Vector2f(node1.shape.getPosition().x + 20, node1.shape.getPosition().y + 22);
     lines[1].position = sf::Vector2f(node2.shape.getPosition().x + 20, node2.shape.getPosition().y + 22);
-
     window.draw(lines);
 }
 void checkRepulsion(map<string, SFMLNode>& graph)
@@ -29,8 +28,6 @@ void checkRepulsion(map<string, SFMLNode>& graph)
 			if (helperFunctions::getDistance(x1 + 20, y1 + 22, x2 + 20, y2 + 22) <= 150)
 			{
 				//cout << "SHOULD BE REPULSING\n";
-
-
 				double slope = (y2 - y1) / (x2 - x1);
 				if (i.second.speedX || i.second.speedY || j.second.speedX || j.second.speedY)
 					continue;
@@ -49,7 +46,6 @@ void checkRepulsion(map<string, SFMLNode>& graph)
 				else
 					i.second.speedY = -abs(i.second.speedY), j.second.speedY = abs(j.second.speedY);
 			}
-
 		}
 	}
 }
@@ -96,6 +92,14 @@ int main()
 			if (event.type == Event::KeyPressed) {
 				if (event.key.code == Keyboard::B) {
 					traverseResult = helperFunctions::bfs("Cairo");
+				}
+				if (event.key.code == Keyboard::Z) {
+					vector<pair<string,string>> v = Map::Dijkstra("Asyut","Dahab").second;
+					queue<string> t;
+					for (auto i : v)
+						t.push(i.first);
+					t.push("Dahab");
+					traverseResult = t;
 				}
 				if (event.key.code == Keyboard::D) {
 					traverseResult = helperFunctions::dfs("Cairo", traverseResult);
