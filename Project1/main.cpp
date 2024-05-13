@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include<iostream>
 #include "include/map.h"
 #include <unordered_map>
 #include "Boarders.h"
@@ -13,16 +14,22 @@ void drawLine(SFMLNode node1, SFMLNode node2, RenderWindow &window)
     window.draw(lines);
 }
 int SFMLNode::cnt = 0;
+#include<map>
+using namespace std;
+using namespace sf;
+int Map::cnt = 0;
+map<string, int>Map::hash;
+string DATA_PATH = "../Project1/data/data.txt";
 int main()
 {
     sf::RenderWindow window(sf::VideoMode(1920, 1080), "SFML works!");
-    string dataPath = "data/data.txt";
+    sf::CircleShape shape(100.f);
+    shape.setFillColor(sf::Color::Green);
+    DataManager dataManager = DataManager();
+    dataManager.readData(DATA_PATH);
+    dataManager.printAdjList();
+    cout<<Map::Dijkstra("Cairo", "Dahab").first;
     Boarders boarders;
-    DataManager datamanager;
-    datamanager.readData(dataPath);
-    datamanager.printAdjList();
-    Clock clock;
-    SFMLNode test;
     while (window.isOpen())
     {
         sf::Event event;
