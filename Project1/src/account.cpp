@@ -101,13 +101,14 @@ void Admin::updateCity(string &name, string &new_name) {  // NOTE: if city doesn
 
   // find it, update name, and update name in all connections
   auto &adjList = Map::adjList;
+  //city connections
+  for (auto &i : adjList[name]) { // erase all connections
 
-  for (auto [city, connections] : adjList[name]) { // erase all connections
-    auto it = adjList[city].find(name);
-    assert(it != adjList[city].end());
-    adjList[city].erase(it);
+    auto it = adjList[i.first].find(name);
+    assert(it != adjList[i.first].end());
+    adjList[i.first].erase(it);
 
-    adjList[city].emplace(new_name, connections);
+    adjList[i.first].emplace(new_name, i.second);
   }
 
   auto temp = adjList[name];
@@ -120,10 +121,10 @@ void Admin::deleteCity(string &name) {  // WARNING: city doesn't exist -> runtim
 
   auto &adjList = Map::adjList;
 
-  for (auto [city, connections] : adjList[name]) { // erase all connections
-    auto it = adjList[city].find(name);
-    assert(it != adjList[city].end());
-    adjList[city].erase(it);
+  for (auto &i : adjList[name]) { // erase all connections
+    auto it = adjList[i.first].find(name);
+    assert(it != adjList[i.first].end());
+    adjList[i.first].erase(it);
   }
 
   adjList.erase(adjList.find(name)); // erase key
