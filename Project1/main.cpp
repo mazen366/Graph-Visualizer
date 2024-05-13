@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include "Boarders.h"
 #include "SFMLNode.h"
+#include "HelperFunctions.h"
 #include <thread>
 #include <string>
 #include<map>
@@ -16,6 +17,43 @@ void drawLine(SFMLNode node1, SFMLNode node2, RenderWindow &window)
 
     window.draw(lines);
 }
+void checkRepulsion(map<string, SFMLNode>& graph)
+{
+	for (auto& i : graph)
+	{
+		for (auto& j : graph)
+		{
+			if (i.first == j.first)
+				continue;
+			double x1 = i.second.shape.getPosition().x + 20, y1 = i.second.shape.getPosition().y + 22, x2 = j.second.shape.getPosition().x + 20, y2 = j.second.shape.getPosition().y + 22;
+			if (helperFunctions::getDistance(x1 + 20, y1 + 22, x2 + 20, y2 + 22) <= 150)
+			{
+				//cout << "SHOULD BE REPULSING\n";
+
+
+				double slope = (y2 - y1) / (x2 - x1);
+				if (i.second.speedX || i.second.speedY || j.second.speedX || j.second.speedY)
+					continue;
+				double thetaRad = atan(slope);
+				i.second.speedX = 0.4 * cos(thetaRad);
+				i.second.speedY = 0.4 * sin(thetaRad);
+				j.second.speedX = 0.4 * cos(thetaRad);
+				j.second.speedY = 0.4 * sin(thetaRad);
+				if (i.second.shape.getPosition().x < j.second.shape.getPosition().x)
+					i.second.speedX = -abs(i.second.speedX), j.second.speedX = abs(j.second.speedX);
+				else
+					i.second.speedX = abs(i.second.speedX), j.second.speedX = -abs(i.second.speedX);
+
+				if (i.second.shape.getPosition().y < j.second.shape.getPosition().y)
+					i.second.speedY = abs(i.second.speedY), j.second.speedY = -abs(j.second.speedY);
+				else
+					i.second.speedY = -abs(i.second.speedY), j.second.speedY = abs(j.second.speedY);
+			}
+
+		}
+	}
+}
+map<string, bool> helperFunctions::vis;
 int SFMLNode::cnt = 0;
 using namespace std;
 using namespace sf;
@@ -51,11 +89,20 @@ int main()
     while (window.isOpen())
     {
         sf::Event event;
-        while (window.pollEvent(event))
-        {
-            if (event.type == sf::Event::Closed)
-                window.close();
-        }
+		while (window.pollEvent(event))
+		{
+			if (event.type == sf::Event::Closed)
+				window.close();
+			if (event.type == Event::KeyPressed) {
+				if (event.key.code == Keyboard::B) {
+					traverseResult = helperFunctions::bfs("Cairo");
+				}
+				if (event.key.code == Keyboard::D) {
+					traverseResult = helperFunctions::dfs("Cairo", traverseResult);
+					vis.clear();
+				}
+			}
+		}
         
 		for (auto& i : graph)
 		{
@@ -103,6 +150,7 @@ int main()
 			window.draw(curText);
 		}
 		SFMLNode node = graph.begin()->second;
+		checkRepulsion(graph);
 		window.display();
 		if (!traverseResult.empty()) {
 			this_thread::sleep_for(1.5s);
