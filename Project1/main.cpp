@@ -84,6 +84,8 @@ int main()
 	Text t;
 	queue <vector <string>> allPathsQ;
 	string source = "Cairo", destination = "Dahab";
+	Text curText;
+	curText.setFont(font);
 	for (auto& i : Map::adjList)
 	{
 		
@@ -182,8 +184,7 @@ int main()
 		for (auto& i : graph)
 		{
 			i.second.checkCollision(graph, window), window.draw(i.second.shape);
-			Text curText;
-			curText.setFont(i.second.cityfont);
+			
 			curText.setString((string)i.second.cityName.getString());
 			curText.setFillColor(Color::Red);
 			curText.setScale({ 0.6,0.6 });
