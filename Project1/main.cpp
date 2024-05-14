@@ -99,7 +99,7 @@ int main()
 	allPathsTextInfo.setPosition(0, 40);
 
 	
-    sf::RenderWindow window(sf::VideoMode(1920, 1080), "SFML works!", Style::Fullscreen);
+    sf::RenderWindow window(sf::VideoMode(1920, 1080), "Gui", Style::Fullscreen);
     sf::CircleShape shape(100.f);
     shape.setFillColor(sf::Color::Green);
 
@@ -108,7 +108,7 @@ int main()
     dataManager.readData(DATA_PATH);
     dataManager.printAdjList();
 
-    Boarders boarders;
+    Boarders boarders(font);
 	queue<string>traverseResult;
 	Clock clock;
 	map<string, bool>vis;
@@ -249,6 +249,7 @@ int main()
 		checkRepulsion(graph);
 		window.draw(pathInfo);
 		window.draw(allPathsTextInfo);
+		window.draw(boarders.userGuide);
 		window.display();
 		if (!traverseResult.empty()) {
 			this_thread::sleep_for(2.5s);

@@ -6,7 +6,8 @@ class Boarders {
 public:
 	RectangleShape upper, lower;
 	RectangleShape left, right;
-	Boarders() {
+	Text userGuide;
+	Boarders(Font &font) {
 		upper.setSize({ 1920, 10 });
 		lower.setSize({ 1920, 10 });
 		left.setSize({ 10, 1080 });
@@ -21,6 +22,11 @@ public:
 		lower.setFillColor(Color::Blue);
 		left.setFillColor(Color::Red);
 		right.setFillColor(Color::Yellow);
+
+		userGuide.setPosition({ 1250,800 });
+		userGuide.setFont(font);
+		userGuide.setFillColor(Color(240, 241, 250));
+		userGuide.setString("To select Starting City left click the node\n To select Destination City right click the node\n For DFS press 'D'\n For BFS press 'B'\n For dijkstra press 'Z'\n For all Paths press 'Q'\n To exit Press Escape");
 	}
 	void drawBoarders(RenderWindow& window) {
 		window.draw(upper);
