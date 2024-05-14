@@ -8,7 +8,9 @@
 #include <thread>
 #include <string>
 #include<map>
+#include "include/all_paths.h"
 unordered_map<string, unordered_map<string, Route>> Map::adjList;
+Text pathInfo, allPathsTextInfo;
 void drawLine(SFMLNode node1, SFMLNode node2, RenderWindow &window)
 {
     sf::VertexArray lines(sf::LinesStrip, 2);
@@ -50,16 +52,24 @@ void checkRepulsion(map<string, SFMLNode>& graph)
 	}
 }
 map<string, bool> helperFunctions::vis;
-int SFMLNode::cnt = 0;
+int SFMLNode::cnt = 0, pathCnt = 1;
 using namespace std;
 using namespace sf;
 int Map::cnt = 0;
-bool SFMLNode::active = false;
+bool SFMLNode::active = false, isAllPaths = false;
 map<string, int>Map::hash;
 string DATA_PATH = "../Project1/data/data.txt";
 map <string, SFMLNode> graph;
+queue <int> allPathsCosts;
+
+
 int main()
 {
+	Font font;
+	font.loadFromFile("PoetsenOneRegular.ttf");
+	pathInfo.setFont(font);
+	allPathsTextInfo.setFont(font);
+	allPathsTextInfo.setPosition(0, 40);
     sf::RenderWindow window(sf::VideoMode(1920, 1080), "SFML works!");
     sf::CircleShape shape(100.f);
     shape.setFillColor(sf::Color::Green);
@@ -72,7 +82,8 @@ int main()
 	Clock clock;
 	map<string, bool>vis;
 	Text t;
-	
+	queue <vector <string>> allPathsQ;
+	string source = "Cairo", destination = "Dahab";
 	for (auto& i : Map::adjList)
 	{
 		
@@ -104,6 +115,20 @@ int main()
 				if (event.key.code == Keyboard::D) {
 					traverseResult = helperFunctions::dfs("Cairo", traverseResult);
 					vis.clear();
+				}
+				if (event.key.code == Keyboard::Q)
+				{
+					isAllPaths = true;
+					AllPaths allPaths(Map::adjList, source, destination);
+					allPaths.computeAllPaths();
+					for (auto& i : allPaths.allPathsVector)
+					{
+						pathInfo.setString("Path # " + to_string(pathCnt));
+						allPathsCosts.push(i.first);
+						traverseResult.push(source);
+						for (auto& j : i.second)
+							traverseResult.push(j[1]), allPathsQ.push(j);
+					}
 				}
 			}
 		}
@@ -141,6 +166,18 @@ int main()
 		if (!traverseResult.empty()) {
 			x = traverseResult.front();
 			graph[x].shape.setFillColor(Color::Yellow);
+
+			if (isAllPaths && x != source)
+			{
+				auto curv = allPathsQ.front();
+				allPathsQ.pop();
+				allPathsTextInfo.setString("From  " + curv[0] + "  to  " + curv[1] + " by " + curv[2] + "  with cost:  " + curv[3]);
+			}
+			else if (isAllPaths)
+			{
+				pathInfo.setString("Path # " + to_string(pathCnt) + "  with total cost =  " + to_string(allPathsCosts.front()));
+				allPathsCosts.pop();
+			}
 		}
 		for (auto& i : graph)
 		{
@@ -155,10 +192,18 @@ int main()
 		}
 		SFMLNode node = graph.begin()->second;
 		checkRepulsion(graph);
+		window.draw(pathInfo);
+		window.draw(allPathsTextInfo);
 		window.display();
 		if (!traverseResult.empty()) {
-			this_thread::sleep_for(1.5s);
+			this_thread::sleep_for(2.5s);
 			graph[x].shape.setFillColor(Color::Green);
+			if (traverseResult.front() == destination && isAllPaths)
+				pathCnt++, pathInfo.setString("Path # " + to_string(pathCnt)), allPathsTextInfo.setString("");
+			if (traverseResult.size() == 1 && isAllPaths)
+				pathInfo.setString("");
+			if (traverseResult.empty() && isAllPaths)
+				isAllPaths = false;
 			traverseResult.pop();
 		}
     }

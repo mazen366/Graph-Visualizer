@@ -14,7 +14,7 @@ AllPaths::AllPaths(unordered_map<string, unordered_map<string, Route>> &graph, s
     this->source = source;
     this->destination = destination;
 }
-AllPaths::Path::Path(int weight, vector <string> curPath)
+AllPaths::Path::Path(int weight, vector <vector <string>> curPath)
 {
     this->cost = weight;
     this->pathVector = curPath;
@@ -38,12 +38,14 @@ void AllPaths::displayAllPaths()
         cout << "Path # " << i + 1 << "\n";
         cout << "The cost is: " << allPathsVector[i].first << '\n';
         cout << "The route:\n";
-        for(auto &j : allPathsVector[i].second)
-            cout << j;
+        for (auto& j : allPathsVector[i].second)
+        {
+            cout << j[0] << ' ' << j[1] << ' ' << j[2] << ' ' << j[3] << '\n';
+        }
         cout << '\n';
     }
 }
-void AllPaths::dfsAllPaths(string node,  map <string, bool> &curVis,vector <string> curPath, int weight)
+void AllPaths::dfsAllPaths(string node,  map <string, bool> &curVis,vector <vector <string>> curPath, int weight)
 {    map<transportations, string> enumToStr = {{BUS, "Bus"},
                                           {MICROBUS, "Microbus"},
                                           {TRAIN, "Train"},
@@ -62,9 +64,14 @@ void AllPaths::dfsAllPaths(string node,  map <string, bool> &curVis,vector <stri
         for(auto &i : it.second.roads)
         {
             if(curVis[it.first])
-                continue;
-            string tmp = "From " + node + " to " + it.first + " by " + enumToStr[i.transport] + " with cost: " + to_string(i.cost) + " " + "\n";
-            curPath.push_back(tmp);
+                continue;;
+            
+            vector <string> v;
+            v.push_back(node);
+            v.push_back(it.first);
+            v.push_back(enumToStr[i.transport]);
+            v.push_back(to_string(i.cost));
+            curPath.push_back(v);
             curVis[it.first] = true;
             dfsAllPaths(it.first, curVis, curPath, weight + i.cost);
             curPath.pop_back();
