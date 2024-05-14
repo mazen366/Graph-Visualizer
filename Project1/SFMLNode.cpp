@@ -8,24 +8,24 @@ SFMLNode::SFMLNode()
 	cityfont.loadFromFile("SedanSCRegular.ttf");
 	cityName.setFont(cityfont);
 	cityName.setString("");
-	cityName.setFillColor(Color::Red);
+	cityName.setFillColor(Color(240, 241, 250));
 	cityName.setScale({ 0.5,0.5 });
 	kk = SFMLNode::cnt;
 	SFMLNode::cnt++;
 	shape = CircleShape(50.f);
-	shape.setFillColor(sf::Color::Green);
+	shape.setFillColor(Color(26, 31, 55));
 	shape.setOrigin(50 / 2, 50 / 2);
 }
 SFMLNode::SFMLNode(string name) {
 	cityfont.loadFromFile("SedanSCRegular.ttf");
 	cityName.setFont(cityfont);
 	cityName.setString(name);
-	cityName.setFillColor(Color::Red);
+	cityName.setFillColor(Color(240, 241, 250));
 	cityName.setScale({ 0.6,0.6 });
 	kk = SFMLNode::cnt;
 	SFMLNode::cnt++;
 	shape = CircleShape(50.f);
-	shape.setFillColor(sf::Color::Green);
+	shape.setFillColor(Color(26, 31, 55));
 	shape.setOrigin(50 / 2, 50 / 2);
 }
 void SFMLNode::checkCollision(map <string, SFMLNode>& graph, RenderWindow &window, Boarders boarders)
@@ -34,15 +34,18 @@ void SFMLNode::checkCollision(map <string, SFMLNode>& graph, RenderWindow &windo
 	auto translated_pos = window.mapPixelToCoords(mouse_pos);
 	if ((!active || isDragged) && shape.getGlobalBounds().contains(translated_pos) && Mouse::isButtonPressed(Mouse::Left))
 	{
-		shape.setFillColor(Color::Magenta);
+		selectedSource = this->cityName.getString();
+		shape.setFillColor(Color(118, 129, 210));
 		if(Mouse::getPosition().y >= 310)
 			shape.setPosition(Vector2f(Mouse::getPosition().x - 30, Mouse::getPosition().y - 30));
 		active = true;
 		isDragged = true;
 	}
 	else if (active && isDragged)
-		active = false, isDragged = false, shape.setFillColor(Color::Green);
-
+		active = false, isDragged = false, shape.setFillColor(Color(26, 31, 55));
+	if (shape.getGlobalBounds().contains(translated_pos) && Mouse::isButtonPressed(Mouse::Right)) {
+		selectedDestination = this->cityName.getString();
+	}
 
 	for (auto& i : Map::adjList[this->cityName.getString()]) {
 		if (graph[i.first].isDragged)

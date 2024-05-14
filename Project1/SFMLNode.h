@@ -13,6 +13,7 @@ public:
 	bool isDragged = 0, isHoovered = 0;
 	static bool active;
 	static int cnt;
+	static string selectedSource,selectedDestination;
 	int kk;
 	CircleShape shape;
 	Font cityfont;

@@ -12,7 +12,6 @@
 #include <assert.h>
 unordered_map<string, unordered_map<string, Route>> Map::adjList;
 Text pathInfo, allPathsTextInfo;
-void loadCitySprite(const std::string& cityName, const std::string& fileName, int i);
 void drawLine(SFMLNode node1, SFMLNode node2, RenderWindow &window)
 {
     sf::VertexArray lines(sf::LinesStrip, 2);
@@ -61,6 +60,8 @@ using namespace std;
 using namespace sf;
 int Map::cnt = 0;
 bool SFMLNode::active = false, isAllPaths = false;
+string SFMLNode::selectedSource = "Cairo";
+string SFMLNode::selectedDestination = "Dahab";
 map<string, int>Map::hash;
 string DATA_PATH = "../Project1/data/data.txt";
 map <string, SFMLNode> graph;
@@ -73,7 +74,7 @@ vector<pair<string, string>> DijkstraPath;
 int idxDijk;
 Texture textures[38];
 vector<string> cityNames = {
-		"Alexandria", "Aswan", "Asyut", "Beheira", "Beni Suef", "Cairo", "Dahab", "Dakahlia", "Dakhla", "Damietta",
+		"Alexandria", "Aswan", "Asyut", "Beheira", "BeniSuef", "Cairo", "Dahab", "Dakahlia", "Dakhla", "Damietta",
 		"Kharga", "Luxor", "Marsa Alam", "Marsa Matrouh", "Minya", "Monufia", "Nuewiba", "Port Said", "Qalyubia",
 		"Qena", "Ras Sedr", "Safaga", "Saint Catherine", "Sharm El Sheikh", "Sharqia", "Siwa", "Sohag", "Suez",
 		"Taba", "El Alamein", "El Tor", "Faiyum", "Farafra", "Gharbia", "Giza", "Hurghada", "Ismailia", "Kafr El Sheikh"
@@ -90,8 +91,10 @@ int main()
 	Font font;
 	font.loadFromFile("PlusJakartaSans-VariableFont_wght.ttf");
 	pathInfo.setFont(font);
+	pathInfo.setFillColor(Color(240, 241, 250));
 
 	allPathsTextInfo.setFont(font);
+	allPathsTextInfo.setFillColor(Color(240, 241, 250));
 	allPathsTextInfo.setStyle(Text::Bold);
 	allPathsTextInfo.setPosition(0, 40);
 
@@ -114,14 +117,13 @@ int main()
 	string source = "Cairo", destination = "Dahab";
 	Text curText;
 	curText.setFont(font);
+	curText.setFillColor(Color(240, 241, 250));
 	for (auto& i : Map::adjList)
 	{
 		
 		graph[i.first] = SFMLNode(i.first);
 		t.setFont(graph[i.first].cityfont);
 		graph[i.first].shape.setPosition(50 + graph[i.first].kk * 70, 300 + graph[i.first].kk * 20);
-		graph[i.first].shape.setFillColor(Color::Green);
-		//(i % 2 == 0) ? graph[i].shape.setFillColor(Color::Green) : graph[i].shape.setFillColor(Color::Blue), graph[i].shape.setScale(0.8, 0.8);
 	}
     while (window.isOpen())
     {
@@ -131,13 +133,16 @@ int main()
 			if (event.type == sf::Event::Closed)
 				window.close();
 			if (event.type == Event::KeyPressed) {
+				if (event.key.code == Keyboard::Escape) {
+					window.close();
+				}
 				if (event.key.code == Keyboard::B) {
-					traverseResult = helperFunctions::bfs("Cairo");
+					traverseResult = helperFunctions::bfs(SFMLNode::selectedSource);
 				}
 				if (event.key.code == Keyboard::Z) {
 					isDijkstra = true;
 					idxDijk = 0;
-					tie(totalDijkstraCost,DijkstraPath)= Map::Dijkstra(source, destination);
+					tie(totalDijkstraCost,DijkstraPath)= Map::Dijkstra(SFMLNode::selectedSource, SFMLNode::selectedDestination);
 					queue<string> t;
 					for (auto i : DijkstraPath)
 						t.push(i.first);
@@ -145,13 +150,13 @@ int main()
 					traverseResult = t;
 				}
 				if (event.key.code == Keyboard::D) {
-					traverseResult = helperFunctions::dfs("Cairo", traverseResult);
+					traverseResult = helperFunctions::dfs(SFMLNode::selectedSource, traverseResult);
 					vis.clear();
 				}
 				if (event.key.code == Keyboard::Q)
 				{
 					isAllPaths = true;
-					AllPaths allPaths(Map::adjList, source, destination);
+					AllPaths allPaths(Map::adjList, SFMLNode::selectedSource, SFMLNode::selectedDestination);
 					pathInfo.setString("Enter your budget: ");
 					window.draw(pathInfo);
 					window.display();
@@ -184,10 +189,9 @@ int main()
 			}
 			else
 				i.second.speedY = min(0.0, i.second.speedY + 0.04);
-		}
-		for (auto& i : graph) {
 			i.second.sinWave(helperFunctions::randomFloat(0.01, 0.038), helperFunctions::randomFloat(0.8, 0.97), clock.getElapsedTime().asSeconds());
 		}
+
 		window.clear();
 		window.draw(bgSprite);
 		for (auto& i : Map::adjList) {
@@ -201,7 +205,7 @@ int main()
 		string x = "\0";
 		if (!traverseResult.empty()) {
 			x = traverseResult.front();
-			graph[x].shape.setFillColor(Color::Yellow);
+			graph[x].shape.setFillColor(Color(118, 129, 210));
 			for(int i = 0; i < 38; i++)
 			{
 				if (cityNames[i] == x)
@@ -248,7 +252,7 @@ int main()
 		window.display();
 		if (!traverseResult.empty()) {
 			this_thread::sleep_for(2.5s);
-			graph[x].shape.setFillColor(Color::Green);
+			graph[x].shape.setFillColor(Color(26, 31, 55));
 			if (traverseResult.front() == destination && isAllPaths)
 				pathCnt++, pathInfo.setString("Path # " + to_string(pathCnt)), allPathsTextInfo.setString("");
 			if (traverseResult.front() == source && isDijkstra)
@@ -267,10 +271,6 @@ int main()
 
     return 0;
 }
-
-
-
-
 void loadingBGs()
 {
 	
