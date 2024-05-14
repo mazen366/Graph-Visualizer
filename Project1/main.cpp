@@ -9,8 +9,10 @@
 #include <string>
 #include<map>
 #include "include/all_paths.h"
+#include <assert.h>
 unordered_map<string, unordered_map<string, Route>> Map::adjList;
 Text pathInfo, allPathsTextInfo;
+void loadCitySprite(const std::string& cityName, const std::string& fileName, int i);
 void drawLine(SFMLNode node1, SFMLNode node2, RenderWindow &window)
 {
     sf::VertexArray lines(sf::LinesStrip, 2);
@@ -69,15 +71,21 @@ bool isDijkstra = false;
 long long totalDijkstraCost;
 vector<pair<string, string>> DijkstraPath;
 int idxDijk;
-void loadingBGs();
-map <string, Sprite> currentCitySprite;
+Texture textures[38];
+vector<string> cityNames = {
+		"Alexandria", "Aswan", "Asyut", "Beheira", "Beni Suef", "Cairo", "Dahab", "Dakahlia", "Dakhla", "Damietta",
+		"Kharga", "Luxor", "Marsa Alam", "Marsa Matrouh", "Minya", "Monufia", "Nuewiba", "Port Said", "Qalyubia",
+		"Qena", "Ras Sedr", "Safaga", "Saint Catherine", "Sharm El Sheikh", "Sharqia", "Siwa", "Sohag", "Suez",
+		"Taba", "El Alamein", "El Tor", "Faiyum", "Farafra", "Gharbia", "Giza", "Hurghada", "Ismailia", "Kafr El Sheikh"
+};
 
+void loadingBGs();
 int main()
 {
-
+	
+	loadingBGs();
 	bgTex.loadFromFile("Background.png");
 	bgSprite.setTexture(bgTex);
-
 	// set Font 
 	Font font;
 	font.loadFromFile("PlusJakartaSans-VariableFont_wght.ttf");
@@ -194,7 +202,16 @@ int main()
 		if (!traverseResult.empty()) {
 			x = traverseResult.front();
 			graph[x].shape.setFillColor(Color::Yellow);
-
+			for(int i = 0; i < 38; i++)
+			{
+				if (cityNames[i] == x)
+				{
+					Sprite spr;
+					spr.setTexture(textures[i]);
+					window.draw(spr);
+					break;
+				}
+			}
 			if (isAllPaths && x != source)
 			{
 				auto curv = allPathsQ.front();
@@ -256,66 +273,10 @@ int main()
 
 void loadingBGs()
 {
-	Texture t;
-	Sprite spr;
-	t.loadFromFile("Alexandria.png");
-	spr.setTexture(t);
-	currentCitySprite["Alexandria"] = spr;
-
-
-	t.loadFromFile("Aswan.png");
-	spr.setTexture(t);
-	currentCitySprite["Aswan"] = spr;
-
-
-	t.loadFromFile("Asyut.png");
-	spr.setTexture(t);
-	currentCitySprite["Asyut"] = spr;
-
-
-	t.loadFromFile("Beheira.png");
-	spr.setTexture(t);
-	currentCitySprite["Beheira"] = spr;
-
-	t.loadFromFile("Beni Suef.png");
-	spr.setTexture(t);
-	currentCitySprite["Beni Suef"] = spr;
-
-	t.loadFromFile("Cairo.png");
-	spr.setTexture(t);
-	currentCitySprite["Cairo"] = spr;
-
-	t.loadFromFile("Dahab.png");
-	spr.setTexture(t);
-	currentCitySprite["Dahab"] = spr;
-
-	t.loadFromFile("Dakahlia.png");
-	spr.setTexture(t);
-	currentCitySprite["Dakahlia"] = spr;
-
-	t.loadFromFile("Dakhla.png");
-	spr.setTexture(t);
-	currentCitySprite["Dakhla"] = spr;
-
-	t.loadFromFile("Damietta.png");
-	spr.setTexture(t);
-	currentCitySprite["Damietta"] = spr;
-
-	t.loadFromFile("Kharga.png");
-	spr.setTexture(t);
-	currentCitySprite["Kharga"] = spr;
-
-	t.loadFromFile("Luxor.png");
-	spr.setTexture(t);
-	currentCitySprite["Luxor"] = spr;
-
-	t.loadFromFile("Marsa Alam.png");
-	spr.setTexture(t);
-	currentCitySprite["Marsa Alam"] = spr;
-
-	t.loadFromFile("Marsa Matrouh.png");
-	spr.setTexture(t);
-	currentCitySprite["Marsa Matrouh"] = spr;
 	
-
+	for (size_t i = 0; i < cityNames.size(); ++i) {
+		if (textures[i].loadFromFile(cityNames[i] + ".png")) {
+			// Error loading texture
+		}
+	}
 }
