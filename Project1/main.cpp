@@ -62,21 +62,31 @@ string DATA_PATH = "../Project1/data/data.txt";
 map <string, SFMLNode> graph;
 queue <int> allPathsCosts;
 
+// used when dijkstra on
+bool isDijkstra = false;
+long long totalDijkstraCost;
+vector<pair<string, string>> DijkstraPath;
+int idxDijk;
 
 int main()
 {
+	// set Font 
 	Font font;
 	font.loadFromFile("PoetsenOneRegular.ttf");
 	pathInfo.setFont(font);
 	allPathsTextInfo.setFont(font);
 	allPathsTextInfo.setPosition(0, 40);
+
+	
     sf::RenderWindow window(sf::VideoMode(1920, 1080), "SFML works!");
     sf::CircleShape shape(100.f);
     shape.setFillColor(sf::Color::Green);
+
+	//read data from file
     DataManager dataManager = DataManager();
     dataManager.readData(DATA_PATH);
     dataManager.printAdjList();
-    cout<<Map::Dijkstra("Cairo", "Dahab").first;
+
     Boarders boarders;
 	queue<string>traverseResult;
 	Clock clock;
@@ -91,7 +101,7 @@ int main()
 		
 		graph[i.first] = SFMLNode(i.first);
 		t.setFont(graph[i.first].cityfont);
-		graph[i.first].shape.setPosition(100 + graph[i.first].kk * 200, 100 + graph[i.first].kk * 50);
+		graph[i.first].shape.setPosition(50 + graph[i.first].kk * 50, 50 + graph[i.first].kk * 100);
 		graph[i.first].shape.setFillColor(Color::Green);
 		//(i % 2 == 0) ? graph[i].shape.setFillColor(Color::Green) : graph[i].shape.setFillColor(Color::Blue), graph[i].shape.setScale(0.8, 0.8);
 	}
@@ -107,11 +117,13 @@ int main()
 					traverseResult = helperFunctions::bfs("Cairo");
 				}
 				if (event.key.code == Keyboard::Z) {
-					vector<pair<string,string>> v = Map::Dijkstra("Asyut","Dahab").second;
+					isDijkstra = true;
+					idxDijk = 0;
+					tie(totalDijkstraCost,DijkstraPath)= Map::Dijkstra(source, destination);
 					queue<string> t;
-					for (auto i : v)
+					for (auto i : DijkstraPath)
 						t.push(i.first);
-					t.push("Dahab");
+					t.push(destination);
 					traverseResult = t;
 				}
 				if (event.key.code == Keyboard::D) {
@@ -180,6 +192,13 @@ int main()
 				pathInfo.setString("Path # " + to_string(pathCnt) + "  with total cost =  " + to_string(allPathsCosts.front()));
 				allPathsCosts.pop();
 			}
+			if (isDijkstra and traverseResult.size() > 1) {
+				allPathsTextInfo.setString("from " + DijkstraPath[idxDijk].first + " use " + DijkstraPath[idxDijk].second );
+				idxDijk++;
+			}else if (isDijkstra) {
+				allPathsTextInfo.setString("now we are in destination :" + destination);
+				idxDijk++;
+			}
 		}
 		for (auto& i : graph)
 		{
@@ -201,11 +220,17 @@ int main()
 			graph[x].shape.setFillColor(Color::Green);
 			if (traverseResult.front() == destination && isAllPaths)
 				pathCnt++, pathInfo.setString("Path # " + to_string(pathCnt)), allPathsTextInfo.setString("");
+			if (traverseResult.front() == destination && isAllPaths)
+				pathInfo.setString("Total cost =  " + to_string(totalDijkstraCost)), allPathsTextInfo.setString("");
 			if (traverseResult.size() == 1 && isAllPaths)
 				pathInfo.setString("");
-			if (traverseResult.empty() && isAllPaths)
-				isAllPaths = false;
 			traverseResult.pop();
+			if (traverseResult.empty()) {
+				isAllPaths = false;
+				isDijkstra = false;
+				allPathsTextInfo.setString("");
+			}
+			
 		}
     }
 
