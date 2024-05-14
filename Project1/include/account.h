@@ -1,46 +1,37 @@
 #pragma once
 
-#include "map_helpers.h"
 #include <string>
 
+#include "map_helpers.h"
 
 using namespace std;
 
 class Account {
-private:
-  string userName;
-  string password;
-
-  bool validatePassword(string);
-
 public:
-  Account();
-  Account(string, string); // signup
-  bool greetUser();
-  bool signup();
-  bool login();
-  string getName();
-  string getPassword();
-  void setName(string);
-  void setPassword(string);
+    virtual bool mainMenu(Account*) = 0;
 };
 
-class User : Account {
+class User : public Account {
 public:
-  void traverseMap();
-  void checkState();
+    void traverseMap();
+    void checkState();
+    void getOptions();
+    bool mainMenu(Account*);
 };
 
-class Admin : Account {
+class Admin : public Account {
 public:
-  void addRoad(string &city1, string &city2, int cost,
-               transportations transportation);
-  void updateRoad(string &city1, string &city2, int cost,
-                  transportations transportation, int new_cost,
-                  transportations new_transportation);
-  void deleteRoad(Road road);
-  //
-  void addCity(string &name);
-  void updateCity(string &name, string &new_name);
-  void deleteCity(string &name);
+    string getCityName();
+    void selectRoad(string&, string&, int&, transportations&);
+
+    bool mainMenu(Account*);
+
+    void addRoad(string& city1, string& city2, int cost, transportations transportation);
+    void updateRoad(string& city1, string& city2, int cost, transportations transportation,
+        int new_cost, transportations new_transportation);
+    void deleteRoad(Road road);
+    //
+    void addCity(string& name);
+    void updateCity(string& name, string& new_name);
+    void deleteCity(string& name);
 };

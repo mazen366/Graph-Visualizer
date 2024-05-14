@@ -9,6 +9,7 @@
 #include <string>
 #include<map>
 #include "include/all_paths.h"
+#include "WorkFlow.h"
 #include <assert.h>
 unordered_map<string, unordered_map<string, Route>> Map::adjList;
 Text pathInfo, allPathsTextInfo;
@@ -83,7 +84,10 @@ vector<string> cityNames = {
 void loadingBGs();
 int main()
 {
-	
+	WorkFlow workFlow;
+	workFlow.work();
+
+
 	loadingBGs();
 	bgTex.loadFromFile("Background.png");
 	bgSprite.setTexture(bgTex);
