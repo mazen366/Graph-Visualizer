@@ -143,10 +143,11 @@ int main()
 					isDijkstra = true;
 					idxDijk = 0;
 					tie(totalDijkstraCost,DijkstraPath)= Map::Dijkstra(SFMLNode::selectedSource, SFMLNode::selectedDestination);
+
 					queue<string> t;
 					for (auto i : DijkstraPath)
 						t.push(i.first);
-					t.push(destination);
+					t.push(SFMLNode::selectedDestination);
 					traverseResult = t;
 				}
 				if (event.key.code == Keyboard::D) {
@@ -157,11 +158,14 @@ int main()
 				{
 					isAllPaths = true;
 					AllPaths allPaths(Map::adjList, SFMLNode::selectedSource, SFMLNode::selectedDestination);
+					cout << SFMLNode::selectedSource << ' ' << SFMLNode::selectedDestination << " \n";
 					pathInfo.setString("Enter your budget: ");
+					cin >> availableBudget;
 					window.draw(pathInfo);
 					window.display();
-					cin >> availableBudget;
+					
 					allPaths.computeAllPaths(availableBudget);
+					cout << availableBudget << '\n';
 					for (auto& i : allPaths.allPathsVector)
 					{
 						pathInfo.setString("Path # " + to_string(pathCnt));
@@ -240,7 +244,7 @@ int main()
 			i.second.checkCollision(graph, window, boarders), window.draw(i.second.shape);
 			
 			curText.setString((string)i.second.cityName.getString());
-			curText.setFillColor(Color::Red);
+			curText.setFillColor(Color(240, 241, 250));
 			curText.setScale({ 0.6,0.6 });
 			curText.setPosition({ i.second.shape.getPosition().x, i.second.shape.getPosition().y + 10 });
 			window.draw(curText);
