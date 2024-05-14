@@ -65,7 +65,7 @@ void AllPaths::dfsAllPaths(string node,  map <string, bool> &curVis,vector <vect
         for(auto &i : it.second.roads)
         {
             if(curVis[it.first])
-                continue;;
+                continue;
             
             vector <string> v;
             v.push_back(node);

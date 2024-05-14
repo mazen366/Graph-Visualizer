@@ -23,7 +23,7 @@ public:
 		left.setFillColor(Color::Red);
 		right.setFillColor(Color::Yellow);
 
-		userGuide.setPosition({ 1250,800 });
+		userGuide.setPosition({ 1250,600 });
 		userGuide.setFont(font);
 		userGuide.setFillColor(Color(240, 241, 250));
 		userGuide.setString("To select Starting City left click the node\n To select Destination City right click the node\n For DFS press 'D'\n For BFS press 'B'\n For dijkstra press 'Z'\n For all Paths press 'Q'\n To exit Press Escape");

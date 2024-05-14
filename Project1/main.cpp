@@ -74,6 +74,8 @@ long long totalDijkstraCost;
 vector<pair<string, string>> DijkstraPath;
 int idxDijk;
 Texture textures[38];
+
+
 vector<string> cityNames = {
 		"Alexandria", "Aswan", "Asyut", "Beheira", "BeniSuef", "Cairo", "Dahab", "Dakahlia", "Dakhla", "Damietta",
 		"Kharga", "Luxor", "Marsa Alam", "Marsa Matrouh", "Minya", "Monufia", "Nuewiba", "Port Said", "Qalyubia",
@@ -96,11 +98,12 @@ int main()
 	font.loadFromFile("PlusJakartaSans-VariableFont_wght.ttf");
 	pathInfo.setFont(font);
 	pathInfo.setFillColor(Color(240, 241, 250));
+	pathInfo.setPosition(0, 200);
 
 	allPathsTextInfo.setFont(font);
-	allPathsTextInfo.setFillColor(Color(240, 241, 250));
+	allPathsTextInfo.setFillColor(Color(240, 241, 150));
 	allPathsTextInfo.setStyle(Text::Bold);
-	allPathsTextInfo.setPosition(0, 40);
+	allPathsTextInfo.setPosition(0, 250);
 
 	
     sf::RenderWindow window(sf::VideoMode(1920, 1080), "Gui", Style::Fullscreen);
@@ -118,7 +121,6 @@ int main()
 	map<string, bool>vis;
 	Text t;
 	queue <vector <string>> allPathsQ;
-	string source = "Cairo", destination = "Dahab";
 	Text curText;
 	curText.setFont(font);
 	curText.setFillColor(Color(240, 241, 250));
@@ -164,9 +166,9 @@ int main()
 					AllPaths allPaths(Map::adjList, SFMLNode::selectedSource, SFMLNode::selectedDestination);
 					cout << SFMLNode::selectedSource << ' ' << SFMLNode::selectedDestination << " \n";
 					pathInfo.setString("Enter your budget: ");
-					cin >> availableBudget;
 					window.draw(pathInfo);
 					window.display();
+					cin >> availableBudget;
 					
 					allPaths.computeAllPaths(availableBudget);
 					cout << availableBudget << '\n';
@@ -174,14 +176,14 @@ int main()
 					{
 						pathInfo.setString("Path # " + to_string(pathCnt));
 						allPathsCosts.push(i.first);
-						traverseResult.push(source);
+						traverseResult.push(SFMLNode::selectedSource);
 						for (auto& j : i.second)
 							traverseResult.push(j[1]), allPathsQ.push(j);
 					}
 				}
 			}
 		}
-        
+		boarders.userGuide.setString("Current Source: " + SFMLNode::selectedSource + '\n' + "Current Desintation: " + SFMLNode::selectedDestination +  "\nTo select Starting City left click the node\n To select Destination City right click the node\n For DFS press 'D'\n For BFS press 'B'\n For dijkstra press 'Z'\n For all Paths press 'Q'\n To exit Press Escape");
 		for (auto& i : graph)
 		{
 			i.second.boarderCollision(boarders);
@@ -224,7 +226,7 @@ int main()
 					break;
 				}
 			}
-			if (isAllPaths && x != source)
+			if (isAllPaths && x != SFMLNode::selectedSource)
 			{
 				auto curv = allPathsQ.front();
 				allPathsQ.pop();
@@ -239,7 +241,7 @@ int main()
 				allPathsTextInfo.setString("from " + DijkstraPath[idxDijk].first + " use " + DijkstraPath[idxDijk].second );
 				idxDijk++;
 			}else if (isDijkstra) {
-				allPathsTextInfo.setString("now we are in destination :" + destination);
+				allPathsTextInfo.setString("now we are in destination :" + SFMLNode::selectedDestination);
 				idxDijk++;
 			}
 		}
@@ -262,9 +264,9 @@ int main()
 		if (!traverseResult.empty()) {
 			this_thread::sleep_for(2.5s);
 			graph[x].shape.setFillColor(Color(26, 31, 55));
-			if (traverseResult.front() == destination && isAllPaths)
+			if (traverseResult.front() == SFMLNode::selectedDestination && isAllPaths)
 				pathCnt++, pathInfo.setString("Path # " + to_string(pathCnt)), allPathsTextInfo.setString("");
-			if (traverseResult.front() == source && isDijkstra)
+			if (traverseResult.front() == SFMLNode::selectedSource && isDijkstra)
 				pathInfo.setString("Total cost =  " + to_string(totalDijkstraCost)), allPathsTextInfo.setString("");
 			if (traverseResult.size() == 1 && isAllPaths)
 				pathInfo.setString("");
