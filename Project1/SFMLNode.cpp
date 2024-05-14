@@ -28,14 +28,15 @@ SFMLNode::SFMLNode(string name) {
 	shape.setFillColor(sf::Color::Green);
 	shape.setOrigin(50 / 2, 50 / 2);
 }
-void SFMLNode::checkCollision(map <string, SFMLNode>& graph, RenderWindow &window)
+void SFMLNode::checkCollision(map <string, SFMLNode>& graph, RenderWindow &window, Boarders boarders)
 {
 	auto mouse_pos = sf::Mouse::getPosition(window);
 	auto translated_pos = window.mapPixelToCoords(mouse_pos);
 	if ((!active || isDragged) && shape.getGlobalBounds().contains(translated_pos) && Mouse::isButtonPressed(Mouse::Left))
 	{
 		shape.setFillColor(Color::Magenta);
-		shape.setPosition(Vector2f(Mouse::getPosition().x - 30, Mouse::getPosition().y - 40));
+		if(Mouse::getPosition().y >= 310)
+			shape.setPosition(Vector2f(Mouse::getPosition().x - 30, Mouse::getPosition().y - 30));
 		active = true;
 		isDragged = true;
 	}

@@ -19,11 +19,11 @@ AllPaths::Path::Path(int weight, vector <vector <string>> curPath)
     this->cost = weight;
     this->pathVector = curPath;
 }
-void AllPaths::computeAllPaths()
+void AllPaths::computeAllPaths(int budget)
 {
     map <string, bool> curVis;
     curVis[this->source] = true;
-    dfsAllPaths(this->source, curVis, {}, 0);
+    dfsAllPaths(this->source, curVis, {}, 0, budget);
     
     sort(this->allPathsVector.begin(), this->allPathsVector.end());
 }
@@ -45,7 +45,7 @@ void AllPaths::displayAllPaths()
         cout << '\n';
     }
 }
-void AllPaths::dfsAllPaths(string node,  map <string, bool> &curVis,vector <vector <string>> curPath, int weight)
+void AllPaths::dfsAllPaths(string node,  map <string, bool> &curVis,vector <vector <string>> curPath, int weight, int &money)
 {    map<transportations, string> enumToStr = {{BUS, "Bus"},
                                           {MICROBUS, "Microbus"},
                                           {TRAIN, "Train"},
@@ -54,7 +54,8 @@ void AllPaths::dfsAllPaths(string node,  map <string, bool> &curVis,vector <vect
     
     if(node == this->destination)
     {
-        this->allPathsVector.push_back({weight, {curPath}});
+        if(weight <= money)
+            this->allPathsVector.push_back({weight, {curPath}});
         return;
     }
     for(auto &it : this->graph[node]) // city, Route
@@ -73,7 +74,7 @@ void AllPaths::dfsAllPaths(string node,  map <string, bool> &curVis,vector <vect
             v.push_back(to_string(i.cost));
             curPath.push_back(v);
             curVis[it.first] = true;
-            dfsAllPaths(it.first, curVis, curPath, weight + i.cost);
+            dfsAllPaths(it.first, curVis, curPath, weight + i.cost, money);
             curPath.pop_back();
             curVis[it.first] = false;
         

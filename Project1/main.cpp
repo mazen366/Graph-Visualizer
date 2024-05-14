@@ -51,6 +51,8 @@ void checkRepulsion(map<string, SFMLNode>& graph)
 		}
 	}
 }
+Texture bgTex;
+Sprite bgSprite;
 map<string, bool> helperFunctions::vis;
 int SFMLNode::cnt = 0, pathCnt = 1;
 using namespace std;
@@ -61,24 +63,32 @@ map<string, int>Map::hash;
 string DATA_PATH = "../Project1/data/data.txt";
 map <string, SFMLNode> graph;
 queue <int> allPathsCosts;
-
+int availableBudget = 0;
 // used when dijkstra on
 bool isDijkstra = false;
 long long totalDijkstraCost;
 vector<pair<string, string>> DijkstraPath;
 int idxDijk;
+void loadingBGs();
+map <string, Sprite> currentCitySprite;
 
 int main()
 {
+
+	bgTex.loadFromFile("Background.png");
+	bgSprite.setTexture(bgTex);
+
 	// set Font 
 	Font font;
-	font.loadFromFile("PoetsenOneRegular.ttf");
+	font.loadFromFile("PlusJakartaSans-VariableFont_wght.ttf");
 	pathInfo.setFont(font);
+
 	allPathsTextInfo.setFont(font);
+	allPathsTextInfo.setStyle(Text::Bold);
 	allPathsTextInfo.setPosition(0, 40);
 
 	
-    sf::RenderWindow window(sf::VideoMode(1920, 1080), "SFML works!");
+    sf::RenderWindow window(sf::VideoMode(1920, 1080), "SFML works!", Style::Fullscreen);
     sf::CircleShape shape(100.f);
     shape.setFillColor(sf::Color::Green);
 
@@ -101,7 +111,7 @@ int main()
 		
 		graph[i.first] = SFMLNode(i.first);
 		t.setFont(graph[i.first].cityfont);
-		graph[i.first].shape.setPosition(50 + graph[i.first].kk * 50, 50 + graph[i.first].kk * 100);
+		graph[i.first].shape.setPosition(50 + graph[i.first].kk * 70, 300 + graph[i.first].kk * 20);
 		graph[i.first].shape.setFillColor(Color::Green);
 		//(i % 2 == 0) ? graph[i].shape.setFillColor(Color::Green) : graph[i].shape.setFillColor(Color::Blue), graph[i].shape.setScale(0.8, 0.8);
 	}
@@ -134,7 +144,11 @@ int main()
 				{
 					isAllPaths = true;
 					AllPaths allPaths(Map::adjList, source, destination);
-					allPaths.computeAllPaths();
+					pathInfo.setString("Enter your budget: ");
+					window.draw(pathInfo);
+					window.display();
+					cin >> availableBudget;
+					allPaths.computeAllPaths(availableBudget);
 					for (auto& i : allPaths.allPathsVector)
 					{
 						pathInfo.setString("Path # " + to_string(pathCnt));
@@ -167,7 +181,7 @@ int main()
 			i.second.sinWave(helperFunctions::randomFloat(0.01, 0.038), helperFunctions::randomFloat(0.8, 0.97), clock.getElapsedTime().asSeconds());
 		}
 		window.clear();
-		boarders.drawBoarders(window);
+		window.draw(bgSprite);
 		for (auto& i : Map::adjList) {
 			vis[i.first] = true;
 			for (auto j : i.second) {
@@ -202,7 +216,7 @@ int main()
 		}
 		for (auto& i : graph)
 		{
-			i.second.checkCollision(graph, window), window.draw(i.second.shape);
+			i.second.checkCollision(graph, window, boarders), window.draw(i.second.shape);
 			
 			curText.setString((string)i.second.cityName.getString());
 			curText.setFillColor(Color::Red);
@@ -220,7 +234,7 @@ int main()
 			graph[x].shape.setFillColor(Color::Green);
 			if (traverseResult.front() == destination && isAllPaths)
 				pathCnt++, pathInfo.setString("Path # " + to_string(pathCnt)), allPathsTextInfo.setString("");
-			if (traverseResult.front() == destination && isAllPaths)
+			if (traverseResult.front() == source && isDijkstra)
 				pathInfo.setString("Total cost =  " + to_string(totalDijkstraCost)), allPathsTextInfo.setString("");
 			if (traverseResult.size() == 1 && isAllPaths)
 				pathInfo.setString("");
@@ -235,4 +249,73 @@ int main()
     }
 
     return 0;
+}
+
+
+
+
+void loadingBGs()
+{
+	Texture t;
+	Sprite spr;
+	t.loadFromFile("Alexandria.png");
+	spr.setTexture(t);
+	currentCitySprite["Alexandria"] = spr;
+
+
+	t.loadFromFile("Aswan.png");
+	spr.setTexture(t);
+	currentCitySprite["Aswan"] = spr;
+
+
+	t.loadFromFile("Asyut.png");
+	spr.setTexture(t);
+	currentCitySprite["Asyut"] = spr;
+
+
+	t.loadFromFile("Beheira.png");
+	spr.setTexture(t);
+	currentCitySprite["Beheira"] = spr;
+
+	t.loadFromFile("Beni Suef.png");
+	spr.setTexture(t);
+	currentCitySprite["Beni Suef"] = spr;
+
+	t.loadFromFile("Cairo.png");
+	spr.setTexture(t);
+	currentCitySprite["Cairo"] = spr;
+
+	t.loadFromFile("Dahab.png");
+	spr.setTexture(t);
+	currentCitySprite["Dahab"] = spr;
+
+	t.loadFromFile("Dakahlia.png");
+	spr.setTexture(t);
+	currentCitySprite["Dakahlia"] = spr;
+
+	t.loadFromFile("Dakhla.png");
+	spr.setTexture(t);
+	currentCitySprite["Dakhla"] = spr;
+
+	t.loadFromFile("Damietta.png");
+	spr.setTexture(t);
+	currentCitySprite["Damietta"] = spr;
+
+	t.loadFromFile("Kharga.png");
+	spr.setTexture(t);
+	currentCitySprite["Kharga"] = spr;
+
+	t.loadFromFile("Luxor.png");
+	spr.setTexture(t);
+	currentCitySprite["Luxor"] = spr;
+
+	t.loadFromFile("Marsa Alam.png");
+	spr.setTexture(t);
+	currentCitySprite["Marsa Alam"] = spr;
+
+	t.loadFromFile("Marsa Matrouh.png");
+	spr.setTexture(t);
+	currentCitySprite["Marsa Matrouh"] = spr;
+	
+
 }

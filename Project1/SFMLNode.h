@@ -21,7 +21,7 @@ public:
 	int dirx = 1, diry = 1;
 	SFMLNode();
 	SFMLNode(string name);
-	void checkCollision(map <string, SFMLNode>& graph, RenderWindow &);
+	void checkCollision(map <string, SFMLNode>& graph, RenderWindow &, Boarders);
 	void sinWave(float amplitude, float frequency, float time);
 	void boarderCollision(Boarders boarders);
 	void showCityNames(RenderWindow&);

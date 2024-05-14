@@ -25,7 +25,7 @@ class AllPaths
         vector < pair <int, vector <vector <string>>>> allPathsVector; // from to cost
         AllPaths(unordered_map<string, unordered_map<string, Route>> &graph, string, string);
         void displayAllPaths();
-        void computeAllPaths();
-        void dfsAllPaths(string, map<string, bool>&, vector <vector <string>>, int);
+        void computeAllPaths(int);
+        void dfsAllPaths(string, map<string, bool>&, vector <vector <string>>, int, int&);
         bool comparePaths(Path&, Path&);
 };
