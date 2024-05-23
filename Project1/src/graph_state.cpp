@@ -21,6 +21,7 @@ bool GraphState::isConnected() {
   unordered_map<string, int> vis;
   int numberOfNodes = Map::adjList.size();
   dfs(Map::adjList.begin()->first, vis);
+
   if (vis.size() == numberOfNodes)
     return true;
   else

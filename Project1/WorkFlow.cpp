@@ -59,12 +59,12 @@ int WorkFlow::login() {
 }
 
 void WorkFlow::loadData() {
-    string DATA_PATH = "../../../data/data.txt";
+    string DATA_PATH = "../Project1/data/data.txt";
     DataManager dataManager = DataManager();
     dataManager.readData(DATA_PATH);
 }
 void WorkFlow::uploadData() {
-    string DATA_PATH = "../../../data/data.txt";
+    string DATA_PATH = "../Project1/data/data.txt";
     DataManager dataManager = DataManager();
     dataManager.saveData(DATA_PATH);
 }

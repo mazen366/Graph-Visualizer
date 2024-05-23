@@ -194,4 +194,8 @@ void Admin::deleteRoad(Road road) {  // WARNING: road doesn't exist -> runtimer 
         adjList[city1].erase(city2);
         adjList[city2].erase(city1);
     }
+    //if (adjList[city1].empty())
+    //    adjList.erase(city1);
+    //if (adjList[city2].empty())
+    //    adjList.erase(city2);
 }
